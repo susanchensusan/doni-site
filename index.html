@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doni — your business admin on WhatsApp</title>
+<meta name="description" content="Doni does the admin work of a small business inside WhatsApp: reminders, receipts and records in naira, documents, voice notes to minutes, shop media. Built in Lagos.">
+<meta name="theme-color" content="#008751">
+<!-- 内联 SVG favicon:防止浏览器去请求 /favicon.ico(全站零外部请求铁律) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23008751'/%3E%3Ctext x='16' y='23' font-size='19' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='%23fff'%3ED%3C/text%3E%3C/svg%3E">
+<style>
+/* ============================================================
+ * Doni site — 单文件纯静态。零框架、零构建、零外部请求。
+ * 字体只用系统字体栈;唯一的本地资源是 assets/doni-qr.png。
+ * 移动优先(375 起步),深浅色跟随系统。
+ * ============================================================ */
+
+:root{
+  --ng-green:#008751;      /* 尼日利亚国旗绿 */
+  --ng-green-2:#00a763;
+  --danfo:#f2c744;         /* danfo 黄 */
+  --bg:#fbfaf7;
+  --bg-2:#ffffff;
+  --bg-3:#f2f0ea;
+  --ink:#151a17;
+  --ink-2:#4b544e;
+  --ink-3:#79817b;
+  --line:#e2e0d8;
+  --bubble-you:#e7f3ea;
+  --bubble-doni:#ffffff;
+  --shadow:0 1px 2px rgba(20,30,24,.06), 0 8px 24px rgba(20,30,24,.05);
+  --radius:16px;
+  --wrap:min(720px, 100% - 2rem);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ng-green:#12b56c;
+    --ng-green-2:#0e9a5c;
+    --danfo:#f5cf58;
+    --bg:#0e1211;
+    --bg-2:#161b19;
+    --bg-3:#1d2321;
+    --ink:#eef2ef;
+    --ink-2:#b3bcb6;
+    --ink-3:#8b948e;
+    --line:#293029;
+    --bubble-you:#1d2f26;
+    --bubble-doni:#1d2321;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.35);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  font-size:17px;
+  line-height:1.55;
+  overflow-x:hidden;           /* 375 宽绝不横向滚动 */
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--ng-green);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+h1,h2,h3{line-height:1.2;margin:0 0 .5em;letter-spacing:-.02em}
+h1{font-size:clamp(1.9rem,7vw,3rem);font-weight:800}
+h2{font-size:clamp(1.35rem,4.6vw,1.9rem);font-weight:750}
+h3{font-size:1.06rem;font-weight:700;margin-bottom:.35em}
+p{margin:0 0 1em}
+p:last-child{margin-bottom:0}
+:focus-visible{outline:3px solid var(--ng-green);outline-offset:3px;border-radius:6px}
+
+.wrap{width:var(--wrap);margin-inline:auto}
+section{padding:2.6rem 0}
+section + section{border-top:1px solid var(--line)}
+.eyebrow{
+  font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ng-green);margin:0 0 .7em;
+}
+.lede{font-size:1.06rem;color:var(--ink-2)}
+
+/* ---------- Hero ---------- */
+.hero{
+  padding:2.4rem 0 2.8rem;
+  background:
+    radial-gradient(120% 90% at 82% -10%, color-mix(in srgb, var(--danfo) 26%, transparent), transparent 62%),
+    radial-gradient(100% 80% at 0% 0%, color-mix(in srgb, var(--ng-green) 15%, transparent), transparent 60%);
+  border-top:none;
+}
+.brand{display:flex;align-items:center;gap:.55rem;margin-bottom:1.6rem}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;background:var(--ng-green);
+  color:#fff;font-weight:800;font-size:1.05rem;
+  display:grid;place-items:center;font-family:Georgia,"Times New Roman",serif;
+  flex:0 0 auto;
+}
+.brand-name{font-weight:750;letter-spacing:-.01em}
+.hero h1{margin-bottom:.4em;text-wrap:balance}
+.hero h1 .hl{
+  background:linear-gradient(transparent 62%, color-mix(in srgb, var(--danfo) 70%, transparent) 62%);
+}
+.hero-sub{font-size:1.1rem;color:var(--ink-2);max-width:34ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.6rem 0 .9rem}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:.95rem 1.5rem;border-radius:999px;font-weight:700;font-size:1.02rem;
+  text-decoration:none;border:1.5px solid transparent;min-height:52px;
+}
+.btn:hover,.btn:focus-visible{text-decoration:none}
+.btn-primary{background:var(--ng-green);color:#fff;box-shadow:var(--shadow)}
+.btn-primary:hover{background:var(--ng-green-2)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:var(--bg-2)}
+.btn-ghost:hover{border-color:var(--ng-green);color:var(--ng-green)}
+.hero-note{color:var(--ink-3);font-size:.92rem;margin:0}
+.hero-note b{color:var(--ink-2);font-weight:650;white-space:nowrap}
+
+/* QR 卡 */
+.qr-card{
+  margin-top:1.9rem;display:flex;align-items:center;gap:1rem;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.9rem 1rem;box-shadow:var(--shadow);max-width:420px;
+}
+.qr-card img{
+  width:96px;height:96px;flex:0 0 auto;border-radius:8px;background:#fff;padding:5px;
+  image-rendering:pixelated;
+}
+.qr-card p{font-size:.9rem;color:var(--ink-2);margin:0}
+.qr-card strong{display:block;color:var(--ink);font-size:.98rem;margin-bottom:.2em}
+
+/* ---------- 能力块 ---------- */
+.feature{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.15rem 1.15rem 1.25rem;box-shadow:var(--shadow);margin-bottom:1rem;
+}
+.feature:last-child{margin-bottom:0}
+.feature-head{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.9rem}
+.feature-emoji{font-size:1.5rem;line-height:1.2;flex:0 0 auto}
+.feature-head p{color:var(--ink-2);font-size:.97rem;margin:0}
+
+/* 对话示例 */
+.chat{background:var(--bg-3);border-radius:12px;padding:.75rem;display:grid;gap:.5rem}
+.msg{
+  max-width:88%;padding:.6rem .8rem;border-radius:14px;font-size:.93rem;line-height:1.45;
+  white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 1px 1px rgba(0,0,0,.05);
+}
+.msg .who{
+  display:block;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-3);margin-bottom:.25em;
+}
+.msg-you{background:var(--bubble-you);justify-self:end;border-bottom-right-radius:5px}
+.msg-doni{background:var(--bubble-doni);justify-self:start;border-bottom-left-radius:5px;border:1px solid var(--line)}
+.msg-file{
+  font-style:italic;color:var(--ink-2);background:transparent;border:1px dashed var(--line);
+}
+.chat-note{font-size:.85rem;color:var(--ink-3);margin:.65rem 0 0}
+
+/* ---------- 价格 ---------- */
+.price-grid{display:grid;gap:1rem}
+.price{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.15rem;box-shadow:var(--shadow);
+}
+.price.free{border-color:color-mix(in srgb, var(--ng-green) 45%, var(--line))}
+.price h3{margin-bottom:.15em}
+.price .tag{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:999px;margin-bottom:.7rem;
+}
+.tag-free{background:color-mix(in srgb, var(--ng-green) 16%, transparent);color:var(--ng-green)}
+.tag-soon{background:color-mix(in srgb, var(--danfo) 30%, transparent);color:var(--ink)}
+ul.ticks{list-style:none;padding:0;margin:.6rem 0 0}
+ul.ticks li{padding-left:1.5rem;position:relative;margin-bottom:.4rem;color:var(--ink-2);font-size:.96rem}
+ul.ticks li::before{content:"✓";position:absolute;left:0;color:var(--ng-green);font-weight:800}
+ul.ticks li:last-child{margin-bottom:0}
+.price .amount{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.price .amount small{font-size:.9rem;font-weight:600;color:var(--ink-3)}
+
+/* ---------- Why WhatsApp ---------- */
+.why{display:grid;gap:.75rem}
+.why div{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;
+}
+.why b{display:block;margin-bottom:.15em}
+.why span{color:var(--ink-2);font-size:.95rem}
+
+/* ---------- FAQ ---------- */
+details{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:12px;
+  padding:.85rem 1rem;margin-bottom:.6rem;
+}
+details[open]{border-color:color-mix(in srgb, var(--ng-green) 35%, var(--line))}
+summary{
+  cursor:pointer;font-weight:700;list-style:none;display:flex;gap:.6rem;align-items:flex-start;
+  font-size:1rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{
+  content:"+";margin-left:auto;color:var(--ng-green);font-weight:800;font-size:1.25rem;line-height:1;
+  flex:0 0 auto;
+}
+details[open] summary::after{content:"–"}
+details p{margin:.7rem 0 0;color:var(--ink-2);font-size:.96rem}
+
+/* ---------- 署名 / 页脚 ---------- */
+.made{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.2rem;box-shadow:var(--shadow);
+}
+.made .flagline{font-weight:750;margin-bottom:.4em}
+.made p{color:var(--ink-2);font-size:.97rem}
+footer{padding:2rem 0 3rem;color:var(--ink-3);font-size:.88rem;border-top:1px solid var(--line)}
+footer p{margin-bottom:.5em}
+footer a{color:var(--ink-2)}
+
+/* 底部常驻 CTA 条(手机端优先) */
+.sticky-cta{
+  position:sticky;bottom:0;z-index:20;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:saturate(140%) blur(10px);
+  border-top:1px solid var(--line);
+  padding:.6rem 0 calc(.6rem + env(safe-area-inset-bottom));
+}
+.sticky-cta .btn{width:100%}
+
+@media (min-width:640px){
+  body{font-size:18px}
+  section{padding:3.2rem 0}
+  .price-grid{grid-template-columns:1fr 1fr;align-items:start}
+  .why{grid-template-columns:1fr 1fr}
+  .sticky-cta{position:static;background:none;border-top:none;padding:0}
+  .sticky-cta .wrap{width:var(--wrap)}
+  .sticky-cta .btn{width:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">D</div>
+      <div class="brand-name">Doni</div>
+    </div>
+
+    <h1>The <span class="hl">admin work</span> of your business, done inside WhatsApp.</h1>
+
+    <p class="hero-sub">Reminders, receipts, price lists, documents, voice notes, shop pictures. You chat, Doni handles it.</p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://wa.me/2349153264893">💬 Chat on WhatsApp</a>
+      <a class="btn btn-ghost" href="#what">See what it does</a>
+    </div>
+
+    <p class="hero-note">Free to start. No app to download. Save the number: <b>+234 915 326 4893</b></p>
+
+    <div class="qr-card">
+      <img src="assets/doni-qr.png" alt="QR code that opens a WhatsApp chat with Doni" width="96" height="96">
+      <p><strong>Scan to start</strong>Point your camera here and the chat opens. Nothing to install.</p>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 能力区 ============ -->
+<section id="what">
+  <div class="wrap">
+    <p class="eyebrow">What Doni does</p>
+    <h2>Six jobs, done in the chat</h2>
+    <p class="lede" style="margin-bottom:1.6rem">Every example below is what Doni actually replies. Nothing dressed up.</p>
+
+    <!-- 1. 提醒 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">⏰</div>
+        <div>
+          <h3>Reminders that chase you</h3>
+          <p>Meetings, deadlines, callbacks, rent, drugs. Say it like you would say it to a person — once, or every day, every Monday, every weekday, every month on the 5th.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you"><span class="who">You</span>remind me to call mama at 6pm</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>🐶 today 6:00 PM for "call mama" 📝</div>
+        <div class="msg msg-you"><span class="who">You</span>remind me to take my drugs every day at 8am</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>⏰ take my drugs · every day
+next: tomorrow 8:00am</div>
+      </div>
+      <p class="chat-note">Before anything important, Doni gives you a heads-up at 2 hours, 1 hour, 30 minutes and 15 minutes. Miss it and it keeps calling you until you answer.</p>
+    </article>
+
+    <!-- 2. 记账 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">🧾</div>
+        <div>
+          <h3>Snap a receipt, the book keeps itself</h3>
+          <p>Photograph the receipt or just type what you spent. Everything is in naira, sorted by category, and you can pull the whole book out as a spreadsheet file whenever you want.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you msg-file"><span class="who">You</span>📷 photo of a fuel receipt</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>🧾 Logged: ₦8,500 · fuel
+This week: 6 entries, ₦52,300 (say "ledger" for summary)</div>
+        <div class="msg msg-you"><span class="who">You</span>ledger</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>🧾 This week: 6 entries, ₦52,300
+· fuel ₦18,000
+· transport ₦12,500
+· stock ₦21,800
+(reply csv for the file)</div>
+      </div>
+      <p class="chat-note">Typing works too — "I spent 8500 on fuel" lands in the same book.</p>
+    </article>
+
+    <!-- 3. 文件 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">📄</div>
+        <div>
+          <h3>Send a document, get the point</h3>
+          <p>PDF, Word, Excel, PowerPoint, or a link to a web page. Doni reads it and gives you the summary, the key points, the numbers, and — if somebody is pitching you — what they are actually asking for. No limit on how many.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you msg-file"><span class="who">You</span>📎 supplier-contract.pdf</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>📄 Got it — reading your document now, summary coming right up~</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>📋 Summary
+This is a 12-month supply agreement …
+
+🔑 Key points
+- Delivery within 7 working days of order
+- Prices fixed for the first 6 months
+
+🔢 Numbers
+- Minimum order ₦250,000
+- Late-delivery penalty 2% per week</div>
+        <div class="msg msg-you"><span class="who">You</span>what happens if I cancel early?</div>
+      </div>
+      <p class="chat-note">For ten minutes after it reads a file, you can just keep asking questions about it. If the answer is not in the document, Doni says so instead of inventing one.</p>
+    </article>
+
+    <!-- 4. 录音 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">🎙️</div>
+        <div>
+          <h3>Voice note in, minutes out</h3>
+          <p>Record the meeting — up to an hour — and forward it to Doni. You get the full transcript as a file you can search or forward, plus proper minutes. Naija accent, no wahala.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you msg-file"><span class="who">You</span>🎙️ voice note · 12:04</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>🎙️ Got it — transcribing your recording now (a few minutes for long audio)~</div>
+        <div class="msg msg-doni msg-file"><span class="who">Doni</span>📎 transcript.txt — "🎙️ Full transcript (txt — forward or search it)"</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>📋 Summary
+…
+
+🔑 Key points
+- …
+
+✅ Action items
+- Chika — send revised quote — Friday
+
+🔢 Numbers
+- Deposit agreed: ₦150,000</div>
+      </div>
+      <p class="chat-note">Short voice notes are treated differently — say "remind me…" in a voice note and it simply becomes a reminder.</p>
+    </article>
+
+    <!-- 5. 店铺物料 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">🎨</div>
+        <div>
+          <h3>Shop pictures, menus and price lists</h3>
+          <p>Menus, price lists, product shots, short videos, and WhatsApp stickers — described in one sentence, delivered as an image you can post the same minute.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you"><span class="who">You</span>menu for Mama Nkechi Kitchen: Jollof Rice 1500, Suya 2000, Moin Moin 800</div>
+        <div class="msg msg-doni msg-file"><span class="who">Doni</span>🖼️ a printable menu card with your three items and prices</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>🍽️ Want a longer menu? Send the extra items with prices, like "add Moin Moin 800" — I'll redo the whole card with everything! 🐾</div>
+        <div class="msg msg-you"><span class="who">You</span>make it a sticker</div>
+      </div>
+      <p class="chat-note">Turning a picture you already have into a WhatsApp sticker is free and unlimited. Every picture and video Doni makes carries your own QR code in the corner — a friend scans it, starts using Doni, and you both collect an extra turn.</p>
+    </article>
+
+    <!-- 6. 汇率 -->
+    <article class="feature">
+      <div class="feature-head">
+        <div class="feature-emoji" aria-hidden="true">💱</div>
+        <div>
+          <h3>Today's rate, no argument</h3>
+          <p>The CBN official rate and the live USDT rate side by side, with the exchanges it checked shown underneath. If the sources are down, Doni tells you they are down — it never guesses a number.</p>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="msg msg-you"><span class="who">You</span>usd to naira today</div>
+        <div class="msg msg-doni"><span class="who">Doni</span>💵 USD (CBN official · 14 Aug): ₦1,536
+💱 USDT (real-time): ₦1,398
+🔎 Checked Luno ₦1,395 · Quidax ₦1,398 — best Quidax</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 价格 ============ -->
+<section id="price">
+  <div class="wrap">
+    <p class="eyebrow">What it costs</p>
+    <h2>Free every day. Pay only if you want more.</h2>
+    <p class="lede" style="margin-bottom:1.6rem">No subscription. Nothing renews behind your back.</p>
+
+    <div class="price-grid">
+      <div class="price free">
+        <span class="tag tag-free">Free</span>
+        <h3>Everything above, every day</h3>
+        <ul class="ticks">
+          <li>Reminders — unlimited</li>
+          <li>Receipts and records — unlimited</li>
+          <li>Documents and web pages — unlimited</li>
+          <li>Voice notes to minutes — up to an hour a day</li>
+          <li>10 pictures a day</li>
+          <li>3 short videos a day</li>
+          <li>Exchange rates — unlimited</li>
+        </ul>
+        <p style="margin-top:.9rem;font-size:.92rem;color:var(--ink-3)">Run out? Send <b>invite</b>. Every friend who joins gets you both an extra turn — one more video, or three more pictures.</p>
+      </div>
+
+      <div class="price">
+        <span class="tag tag-soon">Coming soon</span>
+        <h3>Longer, sharper videos</h3>
+        <p class="amount">from ₦1,999 <small>per video</small></p>
+        <ul class="ticks">
+          <li>Pay per use — buy one, own it</li>
+          <li>No subscription, no auto-renewal</li>
+          <li>Longer runtime and higher definition</li>
+        </ul>
+        <p style="margin-top:.9rem;font-size:.92rem;color:var(--ink-3)"><b>Payments are not open yet.</b> The card and transfer checkout is still being set up. Until it is live, nobody is charged for anything — use the free allowance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 为什么在 WhatsApp ============ -->
+<section id="why">
+  <div class="wrap">
+    <p class="eyebrow">Why WhatsApp</p>
+    <h2>Because you are already there</h2>
+    <div class="why">
+      <div><b>No app to download</b><span>Nothing eating your storage, nothing to update, nothing new to learn. It is a chat.</span></div>
+      <div><b>No dollar card, no account</b><span>No sign-up form, no password, no card details to open a chat.</span></div>
+      <div><b>Priced in naira</b><span>₦ from the first line. Your records, your receipts and any future payment stay in naira.</span></div>
+      <div><b>Works on the phone you have</b><span>Text or voice note, on whatever handset and whatever network you are on today.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="wrap">
+    <p class="eyebrow">Questions</p>
+    <h2>Straight answers</h2>
+
+    <details>
+      <summary>Will it answer any question I ask?</summary>
+      <p>No — and that is on purpose. Doni is not a general chat bot. It handles reminders, expense records, documents, recordings, shop media and rates. Ask it who won a match in 1998 and it will tell you plainly that this is outside what it does. That is the deal: a tool that does a short list of jobs properly, not a talking machine that does everything badly.</p>
+    </details>
+
+    <details>
+      <summary>Do I need to download anything or open an account?</summary>
+      <p>No. Save the number <b>+234 915 326 4893</b>, or scan the QR code at the top, and send a message. There is no app, no sign-up form, no password and no card required.</p>
+    </details>
+
+    <details>
+      <summary>What does it cost?</summary>
+      <p>Free, with a daily allowance that covers normal use — reminders, records, documents and rates are unlimited, plus 10 pictures and 3 short videos a day. Longer, sharper videos will be pay-per-use from ₦1,999 each: you buy one and own it, no subscription. Payments are not open yet, so today nothing can be charged.</p>
+    </details>
+
+    <details>
+      <summary>Can Doni see my other chats?</summary>
+      <p>No. Doni only ever sees the messages you send to its own number, exactly like any other contact in your phone. It cannot read your other conversations, your groups or your contact list, and it never sends messages to anyone on your behalf.</p>
+    </details>
+
+    <details>
+      <summary>What language should I write in?</summary>
+      <p>English is best, and Nigerian English works fine — "omo I just burn 8500 on fuel o" is understood as an expense, not a riddle. Doni replies in the language you wrote in.</p>
+    </details>
+
+    <details>
+      <summary>Who is behind this?</summary>
+      <p>One person building in the open in Lagos: Susan Chen, who also wrote <em>Code and Capital</em>. Doni is an independent side project — no ads, no data sold on. What breaks gets posted along with what works.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 署名 ============ -->
+<section id="made">
+  <div class="wrap">
+    <div class="made">
+      <p class="flagline">Built in Lagos 🇳🇬</p>
+      <p>Made by <b>Susan Chen</b>, author of <em>Code and Capital</em> — built in public from Lagos, one feature at a time, for the people who run things from their phone.</p>
+      <p style="margin-top:.8rem">
+        <a href="https://x.com/susanchenbuilds">@susanchenbuilds</a> ·
+        <a href="https://codecapital.com.ng">codecapital.com.ng</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 底部 CTA + 页脚 ============ -->
+<div class="sticky-cta">
+  <div class="wrap">
+    <a class="btn btn-primary" href="https://wa.me/2349153264893">💬 Chat with Doni on WhatsApp</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><b>Doni</b> · +234 915 326 4893 · <a href="https://wa.me/2349153264893">wa.me/2349153264893</a></p>
+    <p>Doni handles reminders, records, documents, recordings, shop media and rates. It is not a general-purpose chat bot and does not give financial, legal or medical advice.</p>
+    <p>Built in Lagos 🇳🇬</p>
+  </div>
+</footer>
+
+</body>
+</html>
